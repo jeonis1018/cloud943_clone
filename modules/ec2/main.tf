@@ -39,6 +39,20 @@ locals {
   selected_ami_id = var.ami_id != null ? var.ami_id : data.aws_ami.amazon_linux_2023[0].id
 }
 
+resource "aws_security_group" "quarantine" {
+  name        = "quarantine-sg"
+  description = "Quarantine for compromised instances"
+  vpc_id      = var.vpc_id
+
+  tags = merge(var.tags, {
+    Name = "quarantine-sg"
+  })
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_security_group" "ec2" {
   name_prefix = "${var.name_prefix}-ec2-"
   description = "Allow the ALB to reach the vulnerable web application"

@@ -105,6 +105,20 @@ module "ec2" {
 }
 
 # ==============================================
+# lambda-quarantine 블록
+# ==============================================
+
+module "lambda_quarantine" {
+  source = "../../modules/lambda-quarantine"
+
+  quarantine_sg_id   = module.ec2.quarantine_sg_id
+  nacl_id            = module.vpc.quarantine_nacl_id
+  nacl_rule_inbound  = module.vpc.quarantine_nacl_rule_inbound
+  nacl_rule_outbound = module.vpc.quarantine_nacl_rule_outbound
+  lambda_source_path = "${path.root}/../../Lambda/Quarantine/handler.py"
+}
+
+# ==============================================
 # Target Group Attachment 블록
 # ==============================================
 

@@ -49,3 +49,19 @@ output "nat_gateway_ids" {
   description = "NAT Gateway ID"
   value = aws_nat_gateway.this[*].id
 }
+
+# Quarantine NACL
+output "quarantine_nacl_id" {
+  description = "Private 서브넷 NACL ID"
+  value       = tolist(data.aws_network_acls.private.ids)[0]
+}
+
+output "quarantine_nacl_rule_inbound" {
+  description = "격리 placeholder 인바운드 규칙 번호"
+  value       = var.quarantine_nacl_rule_inbound
+}
+
+output "quarantine_nacl_rule_outbound" {
+  description = "격리 placeholder 아웃바운드 규칙 번호"
+  value       = var.quarantine_nacl_rule_outbound
+}

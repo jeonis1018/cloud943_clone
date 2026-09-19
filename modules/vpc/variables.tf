@@ -27,3 +27,21 @@ variable "private_subnet_cidrs" {
     type = list(string)
     default = ["10.3.11.0/24", "10.3.12.0/24"]
 }
+
+variable "quarantine_nacl_rule_inbound" {
+  description = "격리 placeholder 인바운드 NACL 규칙 번호 (기존 규칙 번호와 충돌하지 않는 값으로 설정)"
+  type        = number
+  default     = 1
+}
+
+variable "quarantine_nacl_rule_outbound" {
+  description = "격리 placeholder 아웃바운드 NACL 규칙 번호 (기존 규칙 번호와 충돌하지 않는 값으로 설정)"
+  type        = number
+  default     = 1
+}
+
+variable "quarantine_nacl_placeholder_cidr" {
+  description = "격리 NACL placeholder CIDR (실제 트래픽과 매치되지 않는 값, 격리 시 인스턴스 IP로 교체됨)"
+  type        = string
+  default     = "203.0.113.0/32"
+}

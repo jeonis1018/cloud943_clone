@@ -106,3 +106,30 @@ resource "aws_route_table_association" "private" {
     subnet_id = aws_subnet.private[count.index].id
     route_table_id = aws_route_table.private[count.index].id
 }
+
+# Private 서브넷에 연결된 NACL 조회 (격리 규칙 추가 대상)
+data "aws_network_acls" "private" {
+  filter {
+    name   = "association.subnet-id"
+    values = [aws_subnet.private[0].id]
+  }
+}
+
+# 격리 placeholder 규칙 - 실제 격리 시 Lambda가 인스턴스 IP(/32)로 CIDR을 교체함
+resource "aws_network_acl_rule" "quarantine_inbound" {
+  network_acl_id = tolist(data.aws_network_acls.private.ids)[0]
+  rule_number    = var.quarantine_nacl_rule_inbound
+  egress         = false
+  protocol       = "-1"
+  rule_action    = "deny"
+  cidr_block     = var.quarantine_nacl_placeholder_cidr
+}
+
+resource "aws_network_acl_rule" "quarantine_outbound" {
+  network_acl_id = tolist(data.aws_network_acls.private.ids)[0]
+  rule_number    = var.quarantine_nacl_rule_outbound
+  egress         = true
+  protocol       = "-1"
+  rule_action    = "deny"
+  cidr_block     = var.quarantine_nacl_placeholder_cidr
+}
